@@ -1,3 +1,7 @@
 spring:
   application:
     name: llm_gateway
+
+gateway:
+  upstream:
+    url: http://localhost:11434
