@@ -1,13 +1,12 @@
 package com.llm_gateway.llm_gateway.Controller;
 
-import org.springframework.http.MediaType;
 import tools.jackson.databind.JsonNode;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.llm_gateway.llm_gateway.Router.ProviderRouter;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 @RestController
@@ -16,12 +15,10 @@ public class ClientController {
 
 //    @Autowired
 //    private String apiKey; currently using ollama
+    private final ProviderRouter providerRouter;
 
-    private final WebClient webClient;
-
-    @Autowired
-    public ClientController(WebClient webClient) {
-        this.webClient = webClient;
+    public ClientController(ProviderRouter providerRouter) {
+        this.providerRouter = providerRouter;
     }
 
     @PostMapping(value = "/completions", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -31,11 +28,6 @@ public class ClientController {
 //            return Flux.error(new Exception("apiKey is null"));
 //        }
 
-        return webClient.post()
-                .uri("/api/generate")
-                .bodyValue(request)
-                .retrieve()
-                .bodyToFlux(String.class)
-                .onErrorMap(e -> new Exception("Error calling LLM API: " + e.getMessage()));
+        return providerRouter.route(request);
     }
 }

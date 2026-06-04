@@ -4,4 +4,8 @@ spring:
 
 gateway:
   upstream:
-    url: http://localhost:11434
+    llamaurl: http://localhost:11434
+    openaiurl: https://api.openai.com
+    anthropicurl: https://api.anthropic.com
+  ollama:
+    models: llama3.1:8b,mistral
