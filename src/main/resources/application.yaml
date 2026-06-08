@@ -7,5 +7,17 @@ gateway:
     llamaurl: http://localhost:11434
     openaiurl: https://api.openai.com
     anthropicurl: https://api.anthropic.com
+  openai:
+    apikey: ${OPENAI_API_KEY:}
+  anthropic:
+    apikey: ${ANTHROPIC_API_KEY:}
   ollama:
     models: llama3.1:8b,mistral
+
+  api-keys:
+    test-key-alice:
+      rpm: 10
+      tpm: 5000
+    test-key-bob:
+      rpm: 100
+      tpm: 50000
