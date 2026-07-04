@@ -21,3 +21,7 @@ gateway:
     test-key-bob:
       rpm: 100
       tpm: 50000
+
+  cache:
+    max-size: 1000
+    default-ttl: 3600s
