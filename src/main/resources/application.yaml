@@ -2,6 +2,21 @@ spring:
   application:
     name: llm_gateway
 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gateway
+    username: gateway
+    password: gateway
+
+  jpa:
+    hibernate:
+      ddl-auto: validate    # important — Flyway owns the schema
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migrations
+
 gateway:
   upstream:
     llamaurl: http://localhost:11434
@@ -25,3 +40,27 @@ gateway:
   cache:
     max-size: 1000
     default-ttl: 3600s
+
+  idempotency:
+    ttl: 24h
+    in-progress-staleness: 5m    # crashed in_progress rows self-heal after this; tune > p99.9 request time
+    sweep-batch: 1000
+    sweep-interval-ms: 300000    # 5 min
+
+  pricing:
+    default-model:
+      input-per-1m: 10.00     # pessimistic fallback for unknown models
+      output-per-1m: 30.00
+    models:
+      gpt-4o:
+        input-per-1m: 2.50
+        output-per-1m: 10.00
+      gpt-4o-mini:
+        input-per-1m: 0.15
+        output-per-1m: 0.60
+      claude-opus-4-5:
+        input-per-1m: 15.00
+        output-per-1m: 75.00
+      "llama3.1:8b":
+        input-per-1m: 0.10    # synthetic — represents your GPU opportunity cost
+        output-per-1m: 0.10
